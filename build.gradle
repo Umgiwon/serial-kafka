@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.one'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // 시리얼 통신
+    implementation "com.fazecast:jSerialComm:2.9.3"
+
+    // Kafka 클라이언트
+    implementation "org.apache.kafka:kafka-clients:3.7.0"
+
+    // 로그
+    implementation "ch.qos.logback:logback-classic:1.4.14"
+    implementation "org.slf4j:slf4j-api:2.0.9"
+
+    // Lombok
+    compileOnly "org.projectlombok:lombok:1.18.30"
+    annotationProcessor "org.projectlombok:lombok:1.18.30"
+}
+
+test {
+    useJUnitPlatform()
+}
