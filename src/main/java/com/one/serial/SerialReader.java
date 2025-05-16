@@ -34,7 +34,7 @@ public class SerialReader {
     }
 
     /**
-     * 포트로부터 데이터를 반복적으로 읽고, 일긍ㄴ 데이터를 핸들러로 전달
+     * 포트로부터 데이터를 반복적으로 읽고, 읽은 데이터를 핸들러로 전달
      * @param handler 데이터 수신 후 처리할 콜백 핸들러
      */
     public void readLoop(DataHandler handler) {
@@ -46,7 +46,7 @@ public class SerialReader {
             while (true) {
 
                 // 데이터 읽기
-                int numRead = in.read(buffer);
+                int numRead = in.read(buffer); // TODO 실제 기기 연결 후 데이터 수신 확인 필요
 
                 if(numRead > 0) {
 
