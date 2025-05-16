@@ -3,6 +3,7 @@ package com.one;
 import com.one.kafka.KafkaSender;
 import com.one.serial.SerialReader;
 import com.one.util.CRC16Util;
+import com.one.util.PortDetectorUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -14,7 +15,7 @@ import java.io.IOException;
 public class SerialToKafka {
 
     // FIXME 운영 환경에 맞게 수정
-    private static final String PORT_NAME = "COM3"; // 포트 이름 ex) "COM3" (Window) or "/dev/ttyUSB0" (Linux)
+    private static final String PORT_NAME = PortDetectorUtil.detectAvailablePort(); // 포트 이름 ex) "COM3" (Window) or "/dev/ttyUSB0" (Linux)
     private static final int BAUD_RATE = 9600; // 보레이트
 
     public static void main(String[] args) {
@@ -31,9 +32,10 @@ public class SerialToKafka {
         // 2. KafkaSender 초기화
         KafkaSender kafkaSender;
         try {
-            kafkaSender = new KafkaSender("config/kafka.properties");
+            kafkaSender = new KafkaSender("src/main/java/com/one/config/kafka.properties");
         } catch (Exception e) {
             log.error("Kafka 설정 파일 로드 실패: {}", e.getMessage());
+            System.err.println("Kafka 설정 파일 로드 실패: " + e.getMessage());
             reader.close();
             return;
         }

@@ -27,10 +27,10 @@ public class MockSerialReader {
             int crc = CRC16Util.calculateCRC16(payload, 0, payload.length);
             byte[] full = new byte[payload.length + 2];
             System.arraycopy(payload, 0, full, 0, payload.length);
-            full[payload.length - 2] = (byte) (crc & 0xFF); // CRC LSB
-            full[payload.length - 1] = (byte) ((crc >> 8) & 0xFF); // CRC MSB
+            full[full.length - 2] = (byte) (crc & 0xFF); // CRC LSB
+            full[full.length - 1] = (byte) ((crc >> 8) & 0xFF); // CRC MSB
 
-            System.out.println("테스트용 패킷 전송: " + bytesToHex(full));
+            System.out.println("--------------테스트용 패킷 전송: " + bytesToHex(full));
             handler.handle(full);
         }, 0, 5, TimeUnit.SECONDS); // 5초마다 테스트 패킷 생성
     }
