@@ -10,7 +10,7 @@ import java.io.InputStream;
  * Serial Port를 통해 데이터를 읽어오는 클래스
  */
 @Slf4j
-public class SerialReader {
+public class SerialReader implements AutoCloseable {
 
     private SerialPort serialPort;
 

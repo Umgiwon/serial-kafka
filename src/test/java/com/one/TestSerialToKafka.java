@@ -9,29 +9,48 @@ import com.one.util.CRC16Util;
 public class TestSerialToKafka {
     public static void main(String[] args) {
 
-        // kafka sender 초기화
-        KafkaSender kafkaSender;
-        try {
-            kafkaSender = new KafkaSender("src/main/java/com/one/config/kafka.properties");
+//        // kafka sender 초기화
+//        KafkaSender kafkaSender;
+//        try {
+//            kafkaSender = new KafkaSender("src/main/java/com/one/config/kafka.properties");
+//        } catch (Exception e) {
+//            System.err.println("Kafka 설정 로딩 실패 : " + e.getMessage());
+//            return;
+//        }
+//
+//        // CRC 검증 후 Kafka로 전송
+//        MockSerialReader mockReader = new MockSerialReader(data -> {
+//            if(data != null && data.length > 3 && CRC16Util.isValidCRC(data)) {
+//                kafkaSender.send(data);
+//            } else {
+//                System.err.println("CRC 검증 실패, 전송 안함");
+//            }
+//        });
+//
+//        // 테스트 시작
+//        mockReader.start();
+//
+//        // 종료 시 KafkaSender 정리
+//        Runtime.getRuntime().addShutdownHook(new Thread(kafkaSender::close));
+
+
+        try (KafkaSender kafkaSender = new KafkaSender("src/main/java/com/one/config/kafka.properties");
+             MockSerialReader mockReader = new MockSerialReader(data -> {
+                 if(data != null && data.length > 3 && CRC16Util.isValidCRC(data)) {
+                     kafkaSender.send(data);
+                 } else {
+                     System.err.println("CRC 검증 실패, 전송 안함");
+                 }
+             })) {
+
+            mockReader.start();
+
+            // 메인 스레드가 종료되지 않도록 대기
+            Thread.currentThread().join();
+
         } catch (Exception e) {
-            System.err.println("Kafka 설정 로딩 실패 : " + e.getMessage());
-            return;
+            System.err.println("테스트 실행 중 오류 발생: {" + e.getMessage() + "}");
         }
-
-        // CRC 검증 후 Kafka로 전송
-        MockSerialReader mockReader = new MockSerialReader(data -> {
-            if(data != null && data.length > 3 && CRC16Util.isValidCRC(data)) {
-                kafkaSender.send(data);
-            } else {
-                System.err.println("CRC 검증 실패, 전송 안함");
-            }
-        });
-
-        // 테스트 시작
-        mockReader.start();
-
-        // 종료 시 KafkaSender 정리
-        Runtime.getRuntime().addShutdownHook(new Thread(kafkaSender::close));
     }
 }
 
